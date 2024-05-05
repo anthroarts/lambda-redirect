@@ -1,5 +1,6 @@
 locals {
   domains = keys(var.domain_mapping)
+  resource_suffix = var.resource_suffix != "" ? "-${var.resource_suffix}" : ""
 }
 
 data "archive_file" "redirect_lambda" {
@@ -14,17 +15,17 @@ data "archive_file" "redirect_lambda" {
     filename = "index.py"
   }
 
-  output_path = "${path.module}/build/lambda_redirect.zip"
+  output_path = "${path.module}/build/lambda_redirect${local.resource_suffix}.zip"
 }
 
 resource "aws_cloudwatch_log_group" "redirect_lambda" {
-  name              = "/aws/lambda/redirect_lambda"
+  name              = "/aws/lambda/redirect_lambda${local.resource_suffix}"
   retention_in_days = 7
 }
 
 resource "aws_lambda_function" "redirect_lambda" {
   filename         = data.archive_file.redirect_lambda.output_path
-  function_name    = "redirect_lambda"
+  function_name    = "redirect_lambda${local.resource_suffix}"
   role             = aws_iam_role.lambda_execution_role.arn
   handler          = "index.handler"
   source_code_hash = data.archive_file.redirect_lambda.output_base64sha256
@@ -70,12 +71,12 @@ data "aws_iam_policy_document" "lambda_policy" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name   = "lambda-policy"
+  name   = "lambda-policy${local.resource_suffix}"
   policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
 resource "aws_iam_role" "lambda_execution_role" {
-  name               = "redirect-lambda-execution-role"
+  name               = "redirect-lambda-execution-role${local.resource_suffix}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
