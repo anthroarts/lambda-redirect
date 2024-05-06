@@ -15,3 +15,9 @@ variable "http_redirect_code" {
   description = "Which HTTP redirect code to use (301 or 302)"
   default     = "301"
 }
+
+variable "resource_suffix" {
+  type        = string
+  description = "A suffix to append to resources so they don't clash"
+  default     = ""
+}

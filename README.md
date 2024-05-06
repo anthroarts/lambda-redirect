@@ -6,6 +6,8 @@ Yet another serverless lambda redirect. This one accepts a list of domain names 
 module "redirect" {
   source = "../lambda-redirect"
 
+  resource_suffix = "example.com"
+
   domain_mapping = {
     "test.example.com": "https://example.com/test",
     "mail.example.com": "https://mailprovider.com",
@@ -65,7 +67,7 @@ No modules.
 | <a name="input_aws_acm_certificate"></a> [aws\_acm\_certificate](#input\_aws\_acm\_certificate) | ACM certificate to use with the source domains (must be in us-east-1!) | <pre>object({<br>    arn = string<br>  })</pre> | n/a | yes |
 | <a name="input_domain_mapping"></a> [domain\_mapping](#input\_domain\_mapping) | A key/value map of source domains -> target redirects. For example: domain\_mapping: {"test.example.com": "https://example.com/test"} | `map(string)` | n/a | yes |
 | <a name="input_http_redirect_code"></a> [http\_redirect\_code](#input\_http\_redirect\_code) | Which HTTP redirect code to use (301 or 302) | `string` | `"301"` | no |
-
+| <a name="input_resource_suffix"></a> [resource\_suffix](#input\_resource\_suffix) | A suffix to append to resources so they don't clash | `string` | `""` | no |
 ## Outputs
 
 | Name | Description |
